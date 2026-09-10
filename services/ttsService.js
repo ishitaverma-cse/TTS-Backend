@@ -1,16 +1,27 @@
+const createError = (message, statusCode = 400) => {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+
+  return error;
+};
+
 const generateSpeech = async (text, language, voice) => {
-  // Basic validation
-  if (!text || !text.trim()) {
-    throw new Error("Text is required");
+  // Validate text
+  if (!text || typeof text !== "string" || !text.trim()) {
+    throw createError("Valid text is required", 400);
   }
 
-  if (!language) {
-    throw new Error("Language is required");
+  // Validate language
+  if (!language || typeof language !== "string") {
+    throw createError("Valid language is required", 400);
   }
 
-  if (!voice) {
-    throw new Error("Voice is required");
+  // Validate voice
+  if (!voice || typeof voice !== "string") {
+    throw createError("Valid voice is required", 400);
   }
+
+  const cleanText = text.trim();
 
   // Use default ElevenLabs voice when "default" is provided
   const voiceId =
@@ -19,29 +30,51 @@ const generateSpeech = async (text, language, voice) => {
       : voice;
 
   if (!voiceId) {
-    throw new Error("ElevenLabs voice ID is not configured");
+    throw createError(
+      "ElevenLabs voice ID is not configured",
+      500
+    );
   }
 
-  const response = await fetch(
-    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`,
-    {
-      method: "POST",
-      headers: {
-        "xi-api-key": process.env.ELEVENLABS_API_KEY,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        text: text.trim(),
-        model_id: "eleven_multilingual_v2",
-      }),
-    }
-  );
+  if (!process.env.ELEVENLABS_API_KEY) {
+    throw createError(
+      "ElevenLabs API key is not configured",
+      500
+    );
+  }
 
+  let response;
+
+  // Call ElevenLabs API
+  try {
+    response = await fetch(
+      `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`,
+      {
+        method: "POST",
+        headers: {
+          "xi-api-key": process.env.ELEVENLABS_API_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: cleanText,
+          model_id: "eleven_multilingual_v2",
+        }),
+      }
+    );
+  } catch (error) {
+    throw createError(
+      `Unable to connect to ElevenLabs: ${error.message}`,
+      503
+    );
+  }
+
+  // Handle ElevenLabs API errors
   if (!response.ok) {
-    const error = await response.text();
+    const errorBody = await response.text();
 
-    throw new Error(
-      `ElevenLabs API Error (${response.status}): ${error}`
+    throw createError(
+      `ElevenLabs API Error (${response.status}): ${errorBody}`,
+      response.status === 429 ? 429 : 502
     );
   }
 
@@ -49,7 +82,7 @@ const generateSpeech = async (text, language, voice) => {
 
   return {
     audioBuffer,
-    text,
+    text: cleanText,
     language,
     voice: voiceId,
     message: "Speech generated successfully",
