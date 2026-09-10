@@ -8,11 +8,12 @@ const generateSpeech = async (req, res) => {
 
     const result = await generateSpeechService(text, language, voice);
 
-    res.status(200).json({
-      success: true,
-      message: "Speech generated successfully",
-      data: result,
+    res.set({
+      "Content-Type": "audio/mpeg",
+      "Content-Disposition": "inline; filename=\"speech.mp3\"",
     });
+
+    res.status(200).send(Buffer.from(result.audioBuffer));
   } catch (error) {
     console.error("TTS Controller Error:", error.message);
 
