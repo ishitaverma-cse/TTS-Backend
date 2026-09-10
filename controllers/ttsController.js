@@ -10,13 +10,15 @@ const generateSpeech = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Speech generation service is working",
+      message: "Speech generated successfully",
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
+    console.error("TTS Controller Error:", error.message);
+
+    res.status(400).json({
       success: false,
-      message: "Failed to generate speech",
+      message: error.message,
     });
   }
 };
