@@ -4,6 +4,18 @@ const createError = (message, statusCode = 400) => {
 
   return error;
 };
+const supportedLanguageCodes = [
+  "en-US",
+  "hi-IN",
+  "es-ES",
+  "fr-FR",
+  "de-DE",
+  "it-IT",
+  "pt-BR",
+  "ja-JP",
+  "zh-CN",
+  "ko-KR",
+];
 
 const generateSpeech = async (text, language, voice) => {
   // Validate text
@@ -12,8 +24,12 @@ const generateSpeech = async (text, language, voice) => {
   }
 
   // Validate language
-  if (!language || typeof language !== "string") {
-    throw createError("Valid language is required", 400);
+  if (
+    !language ||
+    typeof language !== "string" ||
+    !supportedLanguageCodes.includes(language)
+  ) {
+    throw createError("Unsupported language", 400);
   }
 
   // Validate voice

@@ -2,6 +2,11 @@ const {
   generateSpeech: generateSpeechService,
 } = require("../services/ttsService");
 
+const {
+  supportedLanguages,
+  getDefaultVoice,
+} = require("../utils/ttsOptions");
+
 const generateSpeech = async (req, res) => {
   try {
     const { text, language, voice } = req.body;
@@ -30,6 +35,17 @@ const generateSpeech = async (req, res) => {
   }
 };
 
+const getTTSOptions = (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: {
+      languages: supportedLanguages,
+      defaultVoice: getDefaultVoice(),
+    },
+  });
+};
+
 module.exports = {
   generateSpeech,
+  getTTSOptions,
 };
