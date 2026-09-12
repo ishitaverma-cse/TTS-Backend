@@ -3,6 +3,10 @@ const {
 } = require("../services/ttsService");
 
 const {
+  saveSpeechHistory,
+} = require("../services/historyService");
+
+const {
   supportedLanguages,
   getDefaultVoice,
 } = require("../utils/ttsOptions");
@@ -15,6 +19,13 @@ const generateSpeech = async (req, res) => {
       text,
       language,
       voice
+    );
+
+    await saveSpeechHistory(
+      req.userId,
+      result.text,
+      result.language,
+      result.voice
     );
 
     res.set({

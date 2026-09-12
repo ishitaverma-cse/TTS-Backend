@@ -1,10 +1,11 @@
 const express = require("express");
 const { generateSpeech, getTTSOptions } = require("../controllers/ttsController");
 const router = express.Router();
+const { protect } = require("../middleware/authMiddleware");
 
 
 
-router.post("/", generateSpeech);
+router.post("/", protect, generateSpeech);
 router.get("/options", getTTSOptions);
 
 
