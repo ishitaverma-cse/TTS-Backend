@@ -11,8 +11,22 @@ const {
   getDefaultVoice,
 } = require("../utils/ttsOptions");
 
+const {
+  checkUsageLimit,
+  incrementUsage,
+} = require("../services/usageService");
+
 const generateSpeech = async (req, res) => {
   try {
+    const usage = await checkUsageLimit(req.userId);
+
+    if (!usage.allowed) {
+      return res.status(429).json({
+        success: false,
+        message: "Usage limit reached",
+        data: usage,
+      });
+    }
     const { text, language, voice } = req.body;
 
     const result = await generateSpeechService(
@@ -26,6 +40,10 @@ const generateSpeech = async (req, res) => {
       result.text,
       result.language,
       result.voice
+    );
+    
+    const updatedUsage = await incrementUsage(
+      req.userId
     );
 
     res.set({

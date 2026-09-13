@@ -20,6 +20,16 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
+    usageCount: {
+      type: Number,
+      default: 0,
+    },
+
+    usageLimit: {
+      type: Number,
+      default: 10,
+    },
   },
   {
     timestamps: true,

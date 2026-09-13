@@ -8,6 +8,7 @@ const connectDB = require("./config/db");
 const ttsRoutes = require("./routes/ttsRoutes");
 const authRoutes = require("./routes/authRoutes");
 const historyRoutes = require("./routes/historyRoutes");
+const usageRoutes = require("./routes/usageRoutes");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use("/api/tts", ttsRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/tts/history", historyRoutes);
+app.use("/api/usage", usageRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
