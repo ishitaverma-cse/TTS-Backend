@@ -22,7 +22,12 @@ const speechHistorySchema = new mongoose.Schema(
     voice: {
       type: String,
       required: true,
-    }
+    },
+
+    isFavorite: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
