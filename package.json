@@ -21,6 +21,7 @@
   "homepage": "https://github.com/ishitaverma-cse/TTS-Backend#readme",
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.67.0",
+    "@google/genai": "^2.22.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",

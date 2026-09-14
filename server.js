@@ -9,6 +9,7 @@ const ttsRoutes = require("./routes/ttsRoutes");
 const authRoutes = require("./routes/authRoutes");
 const historyRoutes = require("./routes/historyRoutes");
 const usageRoutes = require("./routes/usageRoutes");
+const aiRoutes = require("./routes/aiRoutes");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use("/api/tts", ttsRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/tts/history", historyRoutes);
 app.use("/api/usage", usageRoutes);
+app.use("/api/ai", aiRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
