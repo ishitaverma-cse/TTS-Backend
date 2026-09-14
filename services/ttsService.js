@@ -17,7 +17,16 @@ const supportedLanguageCodes = [
   "ko-KR",
 ];
 
-const generateSpeech = async (text, language, voice) => {
+const {
+  voiceSettings,
+} = require("../utils/voiceOptions");
+
+const generateSpeech = async (
+  text,
+  language,
+  voice,
+  settings = {}
+) => {
   // Validate text
   if (!text || typeof text !== "string" || !text.trim()) {
     throw createError("Valid text is required", 400);
@@ -38,6 +47,19 @@ const generateSpeech = async (text, language, voice) => {
   }
 
   const cleanText = text.trim();
+
+  const stability = settings.stability ?? voiceSettings.stability.default;
+
+  const similarityBoost =
+    settings.similarityBoost ??
+    voiceSettings.similarityBoost.default;
+
+  const style =
+    settings.style ??
+    voiceSettings.style.default;
+
+  const speed =
+    settings.speed ?? voiceSettings.speed.default;
 
   // Use default ElevenLabs voice when "default" is provided
   const voiceId =
@@ -74,6 +96,13 @@ const generateSpeech = async (text, language, voice) => {
         body: JSON.stringify({
           text: cleanText,
           model_id: "eleven_multilingual_v2",
+
+          voice_settings: {
+            stability,
+            similarity_boost: similarityBoost,
+            style,
+            speed,
+          },
         }),
       }
     );

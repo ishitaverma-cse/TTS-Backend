@@ -27,12 +27,13 @@ const generateSpeech = async (req, res) => {
         data: usage,
       });
     }
-    const { text, language, voice } = req.body;
+    const { text, language, voice, settings } = req.body;
 
     const result = await generateSpeechService(
       text,
       language,
-      voice
+      voice,
+      settings
     );
 
     await saveSpeechHistory(
@@ -41,7 +42,7 @@ const generateSpeech = async (req, res) => {
       result.language,
       result.voice
     );
-    
+
     const updatedUsage = await incrementUsage(
       req.userId
     );
