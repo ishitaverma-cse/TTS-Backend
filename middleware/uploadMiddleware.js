@@ -6,11 +6,13 @@ const fileFilter = (req, file, cb) => {
     const allowedMimeTypes = [
         "text/plain",
         "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ];
 
     const allowedExtensions = [
         ".txt",
         ".pdf",
+        ".docx",
     ];
 
     const extension = file.originalname
@@ -23,7 +25,7 @@ const fileFilter = (req, file, cb) => {
     ) {
         cb(null, true);
     } else {
-        cb(new Error("Only TXT and PDF files are allowed"), false);
+        cb(new Error("Only TXT, PDF and DOCX files are allowed"), false);
     }
 };
 
