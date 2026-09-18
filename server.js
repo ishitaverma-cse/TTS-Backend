@@ -24,7 +24,7 @@ app.use(express.json());
 // Routes
 app.use("/api/tts", ttsRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/tts/history", historyRoutes);
+app.use("/api/history", historyRoutes);
 app.use("/api/usage", usageRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/files", fileRoutes);

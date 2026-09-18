@@ -1,3 +1,5 @@
+const { translateText } = require("./translationService");
+
 const createError = (message, statusCode = 400) => {
   const error = new Error(message);
   error.statusCode = statusCode;
@@ -48,6 +50,12 @@ const generateSpeech = async (
 
   const cleanText = text.trim();
 
+  let speechText = cleanText;
+
+  if (language !== "en-US") {
+    speechText = await translateText(cleanText, language);
+  }
+
   const stability = settings.stability ?? voiceSettings.stability.default;
 
   const similarityBoost =
@@ -94,7 +102,7 @@ const generateSpeech = async (
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          text: cleanText,
+          text: speechText,
           model_id: "eleven_multilingual_v2",
 
           voice_settings: {
@@ -127,7 +135,7 @@ const generateSpeech = async (
 
   return {
     audioBuffer,
-    text: cleanText,
+    text: speechText,
     language,
     voice: voiceId,
     message: "Speech generated successfully",
