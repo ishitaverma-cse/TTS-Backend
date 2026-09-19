@@ -31,7 +31,7 @@ app.use("/api/files", fileRoutes);
 app.use("/api/tts", enhancedTTSRoutes);
 
 // Health check
-app.get("/api/health", (req, res) => {
+app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
     message: "TTS Backend is running!!",
